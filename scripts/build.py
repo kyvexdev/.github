@@ -60,16 +60,16 @@ def header():
 .l{animation:fade .45s both}
 .l1{animation-delay:.7s}.l2{animation-delay:.82s}.l3{animation-delay:.94s}.l4{animation-delay:1.06s}
 .dev{animation:fade .6s 1.3s both}
-.type{animation:type 2.2s 1.8s steps(52) both}
-.cur{animation:follow 2.2s 1.8s steps(52) both,blink 1s 4s steps(1) infinite}
+.type{animation:type 1.9s 1.8s steps(43) both}
+.cur{animation:follow 1.9s 1.8s steps(43) both,blink 1s 3.7s steps(1) infinite}
 .sweep{transform-box:fill-box;transform-origin:0 50%;animation:sweep 1.4s 4s cubic-bezier(.6,0,.2,1) both}
 .ch{opacity:.12;animation:run 2.4s linear infinite}.c2{animation-delay:.3s}.c3{animation-delay:.6s}
 @keyframes grow{from{transform:scaleY(0)}}
 @keyframes slide{from{transform:translateX(-40px);opacity:0}}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}}
-@keyframes type{from{width:0}to{width:752px}}
+@keyframes type{from{width:0}to{width:602px}}
 @keyframes blink{50%{opacity:0}}
-@keyframes follow{from{transform:translateX(-748px)}}
+@keyframes follow{from{transform:translateX(-598px)}}
 @keyframes sweep{from{transform:scaleX(0)}}
 @keyframes run{0%,100%{opacity:.12}20%{opacity:1}45%{opacity:.12}}
 """
@@ -83,13 +83,13 @@ def header():
             f'<g class="l l4" fill="{TEXT}"><polygon points="282,0 300,0 348,72 330,72"/><polygon points="330,0 348,0 300,72 282,72"/></g></g>')
     chev = ''.join(f'<g class="ch c{i + 1}" transform="translate({930 + i * 92} 106) scale(1.75)">'
                    f'<polygon points="0,0 20,0 44,36 20,72 0,72 24,36" fill="{CYAN}"/></g>' for i in range(3))
-    tag = 'FiveM scripts and tools for GTA V roleplay servers.'
+    tag = 'Software, scripts and tools, built to last.'
     body = (f'<rect x="0.5" y="0.5" width="{w - 1}" height="{h - 1}" rx="20" fill="{BG}" stroke="{BORDER}"/>'
             f'{chev}{word}'
             f'<text class="m dev" x="98" y="214" font-size="15" letter-spacing="9" fill="{MUTED}">DEVELOPMENT</text>'
             f'<defs><clipPath id="t"><rect class="type" x="96" y="240" width="760" height="44"/></clipPath></defs>'
-            f'<text class="s" clip-path="url(#t)" x="96" y="272" font-size="26" font-weight="600" fill="{TEXT}" textLength="740" lengthAdjust="spacingAndGlyphs">{html.escape(tag)}</text>'
-            f'<rect class="cur" x="846" y="248" width="3" height="30" fill="{CYAN}"/>'
+            f'<text class="s" clip-path="url(#t)" x="96" y="272" font-size="26" font-weight="600" fill="{TEXT}" textLength="590" lengthAdjust="spacingAndGlyphs">{html.escape(tag)}</text>'
+            f'<rect class="cur" x="696" y="248" width="3" height="30" fill="{CYAN}"/>'
             f'<rect class="sweep" x="96" y="306" width="1088" height="3" rx="1.5" fill="{CYAN}"/>')
     write('header.svg', svg(w, h, body, css))
 
@@ -119,7 +119,7 @@ def products_svg(products):
 
 
 def tech_svg():
-    items = ['STANDALONE', 'NO ESX / QBCORE / QBOX NEEDED', 'LUA + NUI', 'ORIGINAL DESIGNS', 'BUILT FOR ROLEPLAY']
+    items = ['LUA', 'JAVASCRIPT', 'HTML', 'CSS', 'PYTHON', 'SQL / MYSQL', 'GIT']
     w, h, x, parts = 1280, 52, 0, []
     widths = [40 + len(t) * 9.2 for t in items]
     total = sum(widths) + 14 * (len(items) - 1)
