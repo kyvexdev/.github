@@ -137,7 +137,7 @@ def tech_svg():
     total = sum(widths) + gap * (len(items) - 1)
     x = (w - total) / 2
     for i, t in enumerate(items):
-        first = i == 0
+        first = False  # every chip the same
         ink = '#000' if first else TEXT
         parts.append(f'<rect x="{x + .5}" y=".5" width="{widths[i] - 1}" height="{h - 1}" rx="10" fill="{CYAN if first else PANEL}" stroke="{CYAN if first else STRONG}"/>'
                      f'<g transform="translate({x + 20} 16)" fill="none" stroke="{ink}" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">{TECH_ICONS[t]}</g>'
