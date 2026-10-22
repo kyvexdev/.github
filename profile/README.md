@@ -2,11 +2,6 @@
 
 <img src="assets/header.svg" width="100%" alt="Kyvex Development: software, scripts and tools, built to last.">
 
-<br>
-
-<a href="https://discord.gg/JvcWYSXmT7"><img src="https://img.shields.io/discord/1559094566739779584?style=for-the-badge&logo=discord&logoColor=000000&label=DISCORD&labelColor=22D3EE&color=111111" alt="Discord members online"></a>
-<img src="https://img.shields.io/badge/dynamic/json?style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fkyvexdev%2F.github%2Fmain%2Fprofile%2Fstatus.json&query=%24.summary&label=PRODUCTS&labelColor=22D3EE&color=111111" alt="Product status">
-
 </div>
 
 ## About Kyvex
