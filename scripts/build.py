@@ -118,17 +118,31 @@ def products_svg(products):
     write('products.svg', svg(w, h, ''.join(cards)))
 
 
+# Line icons (2px stroke, square caps) on a 20 x 20 grid, one per language or tool.
+TECH_ICONS = {
+    'LUA': '<circle cx="9" cy="11" r="6.5"/><circle cx="16" cy="4" r="2.2"/>',
+    'JAVASCRIPT': '<path d="M7 3H5.5A1.5 1.5 0 0 0 4 4.5V8l-2 2 2 2v3.5A1.5 1.5 0 0 0 5.5 17H7"/><path d="M13 3h1.5A1.5 1.5 0 0 1 16 4.5V8l2 2-2 2v3.5a1.5 1.5 0 0 1-1.5 1.5H13"/>',
+    'HTML': '<path d="M7 5L2 10l5 5"/><path d="M13 5l5 5-5 5"/><path d="M11.5 3l-3 14"/>',
+    'CSS': '<path d="M8 2.5L6 17.5"/><path d="M14 2.5L12 17.5"/><path d="M3 7h15"/><path d="M2 13h15"/>',
+    'PYTHON': '<rect x="1.5" y="3" width="17" height="14" rx="2"/><path d="M5 8l3 2.5L5 13"/><path d="M10 13h5"/>',
+    'SQL / MYSQL': '<ellipse cx="10" cy="4.5" rx="7" ry="2.5"/><path d="M3 4.5v11c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-11"/><path d="M3 10c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/>',
+    'GIT': '<circle cx="5" cy="4" r="2"/><circle cx="5" cy="16" r="2"/><circle cx="15" cy="7" r="2"/><path d="M5 6v8"/><path d="M15 9c0 3.5-4 3.5-8.5 5.5"/>',
+}
+
+
 def tech_svg():
-    items = ['LUA', 'JAVASCRIPT', 'HTML', 'CSS', 'PYTHON', 'SQL / MYSQL', 'GIT']
-    w, h, x, parts = 1280, 52, 0, []
-    widths = [40 + len(t) * 9.2 for t in items]
-    total = sum(widths) + 14 * (len(items) - 1)
+    items = list(TECH_ICONS)
+    w, h, gap, parts = 1280, 52, 14, []
+    widths = [74 + len(t) * 9.2 for t in items]
+    total = sum(widths) + gap * (len(items) - 1)
     x = (w - total) / 2
     for i, t in enumerate(items):
         first = i == 0
+        ink = '#000' if first else TEXT
         parts.append(f'<rect x="{x + .5}" y=".5" width="{widths[i] - 1}" height="{h - 1}" rx="10" fill="{CYAN if first else PANEL}" stroke="{CYAN if first else STRONG}"/>'
-                     f'<text class="m" x="{x + widths[i] / 2}" y="31" font-size="14" letter-spacing="1.5" fill="{"#000" if first else TEXT}" text-anchor="middle">{t}</text>')
-        x += widths[i] + 14
+                     f'<g transform="translate({x + 20} 16)" fill="none" stroke="{ink}" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">{TECH_ICONS[t]}</g>'
+                     f'<text class="m" x="{x + 52}" y="31" font-size="14" letter-spacing="1.5" fill="{ink}">{t}</text>')
+        x += widths[i] + gap
     write('tech.svg', svg(w, h, ''.join(parts)))
 
 
