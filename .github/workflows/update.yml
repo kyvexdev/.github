@@ -1,0 +1,40 @@
+# Rebuilds the organization page's images from the "Kyvex Products" board (and products.json), every six
+# hours, when scripts or products.json change, or on demand (Actions > Update org page > Run workflow).
+# Commits only when an image or the status changed.
+name: Update org page
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  push:
+    branches: [main]
+    paths: ['scripts/**', 'products.json']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-org-page
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build images
+        env:
+          BOARD_TOKEN: ${{ secrets.BOARD_TOKEN }}
+        run: python3 scripts/build.py
+
+      - name: Commit if changed
+        run: |
+          git add profile
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git config user.name "kyvex-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update org page: $(python3 -c 'import json;print(json.load(open("profile/status.json"))["summary"])')"
+          git push
