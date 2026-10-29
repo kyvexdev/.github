@@ -1,32 +1,21 @@
 """Builds the images on the kyvexdev organization page (profile/README.md).
 
-    python scripts/build.py            # status from products.json
-    BOARD_TOKEN=... python scripts/build.py   # status from the "Kyvex Products" board
+    python scripts/build.py
 
-Writes profile/assets/: header.svg (animated), products.svg (one card per product, coloured by status),
-tech.svg, discord.svg, and profile/status.json (read by the PRODUCTS badge). Every image embeds the
-brand fonts (Sora, JetBrains Mono), so GitHub shows them exactly. The GitHub Action runs this every
-six hours and commits only when something changed.
+Writes profile/assets/: header.svg (animated), tech.svg and discord.svg. Every image embeds the brand
+fonts (Sora, JetBrains Mono), so GitHub shows them exactly. Run it by hand after changing an image and
+commit the result. Products aren't listed here: the page links to kyvexdev.com, which is always current.
 """
 import base64
 import html
-import json
 import os
-import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, 'profile', 'assets')
-ORG, BOARD = 'kyvexdev', 3
 
 BG, PANEL, BORDER, STRONG = '#000000', '#111111', '#262626', '#333333'
 TEXT, MUTED, CYAN = '#EDEDED', '#8F8F8F', '#22D3EE'
-STATUS = {  # chip fill, label
-    'Coming soon': (MUTED, 'COMING SOON'),
-    'In development': ('#FBBF24', 'IN DEVELOPMENT'),
-    'Testing': ('#60A5FA', 'TESTING'),
-    'Released': ('#4ADE80', 'RELEASED'),
-}
 
 K_ICON = f'<rect width="16" height="72" fill="{TEXT}"/><polygon points="66,0 46,0 22,36 46,72 66,72 42,36" fill="{CYAN}"/>'
 
@@ -94,30 +83,6 @@ def header():
     write('header.svg', svg(w, h, body, css))
 
 
-def products_svg(products):
-    w, gap, cw, h = 1280, 32, 0, 232
-    n = len(products)
-    cw = (w - gap * (n - 1)) / n
-    cards = []
-    for i, p in enumerate(products):
-        x = i * (cw + gap)
-        fill, label = STATUS.get(p['status'], STATUS['Coming soon'])
-        suffix = p['name'][len('Kyvex'):]
-        lines = p['about']
-        chip_w = 24 + len(label) * 7.8
-        desc = ''.join(f'<text class="s" x="{x + 28}" y="{132 + j * 24}" font-size="16" fill="{MUTED}">{html.escape(t)}</text>' for j, t in enumerate(lines))
-        cards.append(
-            f'<rect x="{x + .5}" y=".5" width="{cw - 1}" height="{h - 1}" rx="16" fill="{PANEL}" stroke="{BORDER}"/>'
-            f'<g transform="translate({x + 28} 34) scale(.42)">{K_ICON}</g>'
-            f'<text class="s" x="{x + 64}" y="62" font-size="28" font-weight="800" fill="{TEXT}">Kyvex<tspan fill="{CYAN}">{html.escape(suffix)}</tspan></text>'
-            f'<text class="m" x="{x + cw - 28}" y="58" font-size="12" letter-spacing="1.5" fill="{MUTED}" text-anchor="end">0{i + 1}</text>'
-            f'<line x1="{x + 28}" y1="96" x2="{x + cw - 28}" y2="96" stroke="#1C1C1C"/>'
-            f'{desc}'
-            f'<rect x="{x + 28}" y="{h - 56}" width="{chip_w}" height="28" rx="6" fill="{fill}"/>'
-            f'<text class="m" x="{x + 28 + chip_w / 2}" y="{h - 37}" font-size="12" letter-spacing="1.5" fill="#000" text-anchor="middle">{label}</text>')
-    write('products.svg', svg(w, h, ''.join(cards)))
-
-
 # Line icons (2px stroke, square caps) on a 20 x 20 grid, one per language or tool.
 TECH_ICONS = {
     'LUA': '<circle cx="9" cy="11" r="6.5"/><circle cx="16" cy="4" r="2.2"/>',
@@ -156,42 +121,11 @@ def discord_svg():
     write('discord.svg', svg(w, h, body))
 
 
-def board_status():
-    """{product name: status} from the Kyvex Products board, or {} without a token."""
-    token = os.environ.get('BOARD_TOKEN')
-    if not token:
-        return {}
-    q = ('query($o:String!,$n:Int!){organization(login:$o){projectV2(number:$n){items(first:50){nodes{'
-         'content{... on DraftIssue{title} ... on Issue{title}} fieldValues(first:20){nodes{'
-         '... on ProjectV2ItemFieldSingleSelectValue{name field{... on ProjectV2SingleSelectField{name}}}}}}}}}}')
-    req = urllib.request.Request('https://api.github.com/graphql', data=json.dumps({'query': q, 'variables': {'o': ORG, 'n': BOARD}}).encode(),
-                                 headers={'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'})
-    data = json.load(urllib.request.urlopen(req))
-    out = {}
-    for item in data['data']['organization']['projectV2']['items']['nodes']:
-        title = (item.get('content') or {}).get('title')
-        for v in item['fieldValues']['nodes']:
-            if v and v.get('field', {}).get('name') == 'Status' and title:
-                out[title.strip()] = v['name']
-    return out
-
-
 def main():
-    products = json.load(open(os.path.join(ROOT, 'products.json'), encoding='utf-8'))
-    live = board_status()
-    for p in products:
-        p['status'] = live.get(p['name'], p.get('status', 'Coming soon'))
     header()
-    products_svg(products)
     tech_svg()
     discord_svg()
-    counts = {}
-    for p in products:
-        counts[p['status']] = counts.get(p['status'], 0) + 1
-    summary = ' · '.join(f'{v} {k.lower()}' for k, v in counts.items())
-    with open(os.path.join(ROOT, 'profile', 'status.json'), 'w', encoding='utf-8', newline='\n') as f:
-        json.dump({'summary': summary, 'products': {p['name']: p['status'] for p in products}}, f, indent=2)
-    print('built:', summary)
+    print('built: header.svg, tech.svg, discord.svg')
 
 
 if __name__ == '__main__':

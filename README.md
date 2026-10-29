@@ -2,6 +2,5 @@
 
 The page shown on [github.com/kyvexdev](https://github.com/kyvexdev): `profile/README.md`.
 
-- **Images** in `profile/assets/` are built by `scripts/build.py` (the brand fonts are embedded).
-- **Product status** comes from the "Kyvex Products" project board. Change a product's Status there (Coming soon, In development, Testing, Released) and the page updates within six hours, or run **Actions > Update org page > Run workflow**.
-- **Product names and descriptions** are in `products.json`. Add a product there and as a card on the board.
+- **Images** in `profile/assets/` are built by `scripts/build.py` (the brand fonts are embedded). Run `python scripts/build.py` after changing one, then commit.
+- **Products** aren't listed on the page: it links to [kyvexdev.com](https://kyvexdev.com), which is always current.

@@ -6,13 +6,13 @@
 
 ## About Kyvex
 
-Kyvex Development builds software, scripts and tools, starting with FiveM resources for GTA V roleplay servers. Clean, original designs that are easy to set up.
+Kyvex Development builds software, scripts and tools: FiveM resources, Discord bots, web apps and custom builds. Clean, original designs that are easy to set up.
 
 We also build custom systems for servers. Reach out on Discord.
 
 ## Products
 
-<img src="assets/products.svg" width="100%" alt="KyvexCAD, KyvexHUD and KyvexGas, coming soon.">
+Everything we make, with prices, docs and updates, is on **[kyvexdev.com](https://kyvexdev.com)**.
 
 ## Tech and standards
 
